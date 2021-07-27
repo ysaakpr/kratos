@@ -68,6 +68,7 @@ func init() {
 		"NewInfoSelfServiceRemoveWebAuthn":                        text.NewInfoSelfServiceRemoveWebAuthn("{name}", aSecondAgo),
 		"NewErrorValidationVerificationFlowExpired":               text.NewErrorValidationVerificationFlowExpired(-time.Second),
 		"NewInfoSelfServiceVerificationSuccessful":                text.NewInfoSelfServiceVerificationSuccessful(),
+		"NewInfoSelfServicePhoneVerificationSuccessful":           text.NewInfoSelfServicePhoneVerificationSuccessful(),
 		"NewVerificationEmailSent":                                text.NewVerificationEmailSent(),
 		"NewErrorValidationVerificationTokenInvalidOrAlreadyUsed": text.NewErrorValidationVerificationTokenInvalidOrAlreadyUsed(),
 		"NewErrorValidationVerificationRetrySuccess":              text.NewErrorValidationVerificationRetrySuccess(),
@@ -114,7 +115,11 @@ func init() {
 		"NewErrorValidationRecoveryTokenInvalidOrAlreadyUsed":     text.NewErrorValidationRecoveryTokenInvalidOrAlreadyUsed(),
 		"NewErrorValidationRecoveryRetrySuccess":                  text.NewErrorValidationRecoveryRetrySuccess(),
 		"NewErrorValidationRecoveryStateFailure":                  text.NewErrorValidationRecoveryStateFailure(),
+		"NewErrorValidationInvalidCode":                           text.NewErrorValidationInvalidCode(),
+		"NewErrorCodeSent":                                        text.NewErrorCodeSent(),
 		"NewInfoNodeInputEmail":                                   text.NewInfoNodeInputEmail(),
+		"NewInfoNodeInputPhone":                                   text.NewInfoNodeInputPhone(),
+		"NewVerificationPhoneSent":                                text.NewVerificationPhoneSent(),
 	}
 }
 

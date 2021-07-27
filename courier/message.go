@@ -15,6 +15,7 @@ const (
 	MessageStatusQueued MessageStatus = iota + 1
 	MessageStatusSent
 	MessageStatusProcessing
+	MessageStatusRejected // Service won't send this message for some unrecoverable reasons (incorrect phone number e.g.)
 )
 
 type MessageType int

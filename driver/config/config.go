@@ -164,6 +164,8 @@ const (
 	ViperKeyWebAuthnRPIcon                                   = "selfservice.methods.webauthn.config.rp.issuer"
 	ViperKeyClientHTTPNoPrivateIPRanges                      = "clients.http.disallow_private_ip_ranges"
 	ViperKeyVersion                                          = "version"
+	CodeMaxAttempts                                          = "selfservice.methods.code.config.max_attempts"
+	CodeLifespan                                             = "selfservice.methods.code.config.lifespan"
 )
 
 const (
@@ -1233,4 +1235,12 @@ func (p *Config) getTSLCertificates(daemon, certBase64, keyBase64, certPath, key
 
 	p.l.Infof("TLS has not been configured for %s, skipping", daemon)
 	return nil
+}
+
+func (p *Config) SelfServiceCodeMaxAttempts() int {
+	return p.p.Int(CodeMaxAttempts)
+}
+
+func (p *Config) SelfServiceCodeLifespan() time.Duration {
+	return p.p.DurationF(CodeLifespan, time.Hour)
 }

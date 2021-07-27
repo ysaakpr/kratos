@@ -33,6 +33,7 @@ func TestNewSMSTemplateFromMessage(t *testing.T) {
 	for tmplType, expectedTmpl := range map[courier.TemplateType]courier.SMSTemplate{
 		courier.TypeOTP:      sms.NewOTPMessage(reg, &sms.OTPMessageModel{To: "+12345678901"}),
 		courier.TypeTestStub: sms.NewTestStub(reg, &sms.TestStubModel{To: "+12345678901", Body: "test body"}),
+		courier.TypeCode:     sms.NewCodeMessage(reg, &sms.CodeMessageModel{To: "+12345678901"}),
 	} {
 		t.Run(fmt.Sprintf("case=%s", tmplType), func(t *testing.T) {
 			tmplData, err := json.Marshal(expectedTmpl)

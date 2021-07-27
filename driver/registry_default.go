@@ -2,6 +2,8 @@ package driver
 
 import (
 	"context"
+	"github.com/benbjohnson/clock"
+	"github.com/ory/kratos/selfservice/strategy/code"
 	"net/http"
 	"strings"
 	"sync"
@@ -70,9 +72,10 @@ import (
 )
 
 type RegistryDefault struct {
-	rwl sync.RWMutex
-	l   *logrusx.Logger
-	c   *config.Config
+	rwl   sync.RWMutex
+	l     *logrusx.Logger
+	c     *config.Config
+	clock clock.Clock
 
 	injectedSelfserviceHooks map[string]func(config.SelfServiceHook) interface{}
 
@@ -128,6 +131,9 @@ type RegistryDefault struct {
 	selfserviceVerificationExecutor *verification.HookExecutor
 
 	selfserviceLinkSender *link.Sender
+
+	selfserviceCodeAuthenticationService code.AuthenticationService
+	selfserviceRandomCodeGenerator       code.RandomCodeGenerator
 
 	selfserviceRecoveryErrorHandler *recovery.ErrorHandler
 	selfserviceRecoveryHandler      *recovery.Handler
@@ -279,6 +285,7 @@ func (m *RegistryDefault) selfServiceStrategies() []interface{} {
 			totp.NewStrategy(m),
 			webauthn.NewStrategy(m),
 			lookup.NewStrategy(m),
+			code.NewStrategy(m),
 		}
 	}
 
@@ -647,6 +654,10 @@ func (m *RegistryDefault) VerificationTokenPersister() link.VerificationTokenPer
 	return m.Persister()
 }
 
+func (m *RegistryDefault) CodePersister() code.CodePersister {
+	return m.Persister()
+}
+
 func (m *RegistryDefault) Persister() persistence.Persister {
 	return m.persister
 }
@@ -697,4 +708,15 @@ func (m *RegistryDefault) HTTPClient(ctx context.Context, opts ...httpx.Resilien
 		opts = append(opts, httpx.ResilientClientDisallowInternalIPs())
 	}
 	return httpx.NewResilientClient(opts...)
+}
+
+func (m *RegistryDefault) Clock() clock.Clock {
+	if m.clock == nil {
+		m.clock = clock.New()
+	}
+	return m.clock
+}
+
+func (m *RegistryDefault) WithRandomCodeGenerator(generator code.RandomCodeGenerator) {
+	m.selfserviceRandomCodeGenerator = generator
 }

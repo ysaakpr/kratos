@@ -29,6 +29,15 @@
                       "type": "boolean"
                     }
                   }
+                },
+                "code": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "identifier": {
+                      "type": "boolean"
+                    }
+                  }
                 }
               }
             },

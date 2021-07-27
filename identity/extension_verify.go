@@ -24,6 +24,11 @@ func (r *SchemaExtensionVerification) Run(ctx jsonschema.ValidationContext, s sc
 	r.l.Lock()
 	defer r.l.Unlock()
 
+	if s.Credentials.Code.Identifier {
+		address := NewVerifiablePhoneAddress(fmt.Sprintf("%s", value), r.i.ID)
+		r.appendAddress(address)
+	}
+
 	switch s.Verification.Via {
 	case AddressTypeEmail:
 		if !jsonschema.Formats["email"](value) {

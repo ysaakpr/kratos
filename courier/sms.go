@@ -3,6 +3,7 @@ package courier
 import (
 	"context"
 	"encoding/json"
+	"io"
 	"net/http"
 
 	"github.com/pkg/errors"
@@ -105,8 +106,18 @@ func (c *courier) dispatchSMS(ctx context.Context, msg Message) error {
 	switch res.StatusCode {
 	case http.StatusOK:
 	case http.StatusCreated:
+	case http.StatusBadRequest:
+		b, err := io.ReadAll(res.Body)
+		if err != nil {
+			return err
+		}
+		return NewMessageRejectedError(res.StatusCode, string(b))
 	default:
-		return errors.New(http.StatusText(res.StatusCode))
+		b, err := io.ReadAll(res.Body)
+		if err != nil {
+			return err
+		}
+		return errors.Errorf("Status: %s, body: %s", http.StatusText(res.StatusCode), string(b))
 	}
 
 	return nil

@@ -70,12 +70,15 @@ const (
 	InfoNodeLabelSubmit                            // 1070005
 	InfoNodeLabelVerifyOTP                         // 1070006
 	InfoNodeLabelEmail                             // 1070007
+	InfoNodeLabelPhone                             // 1070008
 )
 
 const (
-	InfoSelfServiceVerification           ID = 1080000 + iota // 1080000
-	InfoSelfServiceVerificationEmailSent                      // 1080001
-	InfoSelfServiceVerificationSuccessful                     // 1080002
+	InfoSelfServiceVerification                ID = 1080000 + iota // 1080000
+	InfoSelfServiceVerificationEmailSent                           // 1080001
+	InfoSelfServiceVerificationSuccessful                          // 1080002
+	InfoSelfServiceVerificationPhoneSent                           // 1080003
+	InfoSelfServicePhoneVerificationSuccessful                     // 1080004
 )
 
 const (
@@ -94,6 +97,8 @@ const (
 	ErrorValidationLookupAlreadyUsed
 	ErrorValidationNoWebAuthnDevice
 	ErrorValidationNoLookup
+	ErrorValidationInvalidCode
+	ErrorValidationCodeSent
 )
 
 const (

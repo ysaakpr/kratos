@@ -1,5 +1,7 @@
 package courier
 
+//go:generate mockgen -destination=mocks/mock_courier.go -package=mocks github.com/ory/kratos/courier Courier
+
 import (
 	"context"
 	"time"
@@ -79,9 +81,15 @@ func (c *courier) Work(ctx context.Context) error {
 
 func (c *courier) watchMessages(ctx context.Context, errChan chan error) {
 	for {
-		if err := backoff.Retry(func() error {
-			return c.DispatchQueue(ctx)
-		}, backoff.NewExponentialBackOff()); err != nil {
+		if err := backoff.RetryNotify(
+			func() error {
+				return c.DispatchQueue(ctx)
+			},
+			backoff.NewExponentialBackOff(),
+			func(err error, t time.Duration) {
+				c.deps.Logger().WithError(err).Error("Courier DispatchQueue error")
+			},
+		); err != nil {
 			errChan <- err
 			return
 		}

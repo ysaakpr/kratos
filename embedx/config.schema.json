@@ -723,6 +723,9 @@
         "oidc": {
           "$ref": "#/definitions/selfServiceAfterRegistrationMethod"
         },
+        "code": {
+          "$ref": "#/definitions/selfServiceAfterRegistrationMethod"
+        },
         "hooks": {
           "$ref": "#/definitions/selfServiceHooks"
         }
@@ -1363,6 +1366,40 @@
                       "items": {
                         "$ref": "#/definitions/selfServiceOIDCProvider"
                       }
+                    }
+                  }
+                }
+              }
+            },
+            "code": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "title": "Enables Code Method",
+                  "default": false
+                },
+                "config": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "max_attempts": {
+                      "type": "integer",
+                      "title": "Maximum attempts to enter code",
+                      "default": 3
+                    },
+                    "lifespan": {
+                      "title": "Code Lifespan",
+                      "description": "Sets how long the code is valid. If expired, the user has to request new code.",
+                      "type": "string",
+                      "pattern": "^[0-9]+(ns|us|ms|s|m|h)$",
+                      "default": "1m",
+                      "examples": [
+                        "1h",
+                        "1m",
+                        "1s"
+                      ]
                     }
                   }
                 }

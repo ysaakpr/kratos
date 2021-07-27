@@ -2,6 +2,7 @@ package persistence
 
 import (
 	"context"
+	"github.com/ory/kratos/selfservice/strategy/code"
 
 	"github.com/ory/x/networkx"
 
@@ -42,6 +43,7 @@ type Persister interface {
 	recovery.FlowPersister
 	link.RecoveryTokenPersister
 	link.VerificationTokenPersister
+	code.CodePersister
 
 	Close(context.Context) error
 	Ping() error
