@@ -33,6 +33,8 @@ func TestAuthenticationService_SendCode(t *testing.T) {
 		internal.NewConfigurationWithDefaults(t),
 	}
 
+	tc.config.MustSet(config.CodeTestNumbers, []string{"test_phone_number"})
+
 	tests := []struct {
 		name    string
 		service code.AuthenticationService
@@ -51,6 +53,17 @@ func TestAuthenticationService_SendCode(t *testing.T) {
 			"000000",
 			true,
 		},
+		{"do not send code to test phone number",
+			tc.NewCodeAuthenticationService(
+				tc.repoNoCodeCreateCode(),
+				tc.courierNoCalls(),
+				clock.NewMock(),
+				tc.codeGenerator("0000"),
+			),
+			tc.validFlowGetID(),
+			"test_phone_number",
+			false,
+		},
 		{"send code when not sent before",
 			tc.NewCodeAuthenticationService(
 				tc.repoNoCodeCreateCode(),
@@ -58,7 +71,7 @@ func TestAuthenticationService_SendCode(t *testing.T) {
 				clock.NewMock(),
 				tc.codeGenerator("0000"),
 			),
-			tc.validFlow(),
+			tc.validFlowGetID(),
 			"1234",
 			false,
 		},
@@ -106,7 +119,7 @@ func TestAuthenticationService_VerifyCode(t *testing.T) {
 				clock.NewMock(),
 				tc.codeGenerator("0000"),
 			),
-			tc.validFlow(),
+			tc.validFlowGetID(),
 			"1234",
 			true,
 		},
@@ -117,7 +130,7 @@ func TestAuthenticationService_VerifyCode(t *testing.T) {
 				fixClock("2021-07-10T12:00:00Z"),
 				tc.codeGenerator("0000"),
 			),
-			tc.validFlow(),
+			tc.validFlowGetID(),
 			"0000",
 			true,
 		},
@@ -128,7 +141,7 @@ func TestAuthenticationService_VerifyCode(t *testing.T) {
 				fixClock("2021-07-10T12:00:00Z"),
 				tc.codeGenerator("0000"),
 			),
-			tc.validFlow(),
+			tc.validFlowGetID(),
 			"1234",
 			true,
 		},
@@ -139,7 +152,7 @@ func TestAuthenticationService_VerifyCode(t *testing.T) {
 				fixClock("2021-07-10T12:00:00Z"),
 				tc.codeGenerator("0000"),
 			),
-			tc.validFlow(),
+			tc.validFlowGetID(),
 			"0000",
 			false,
 		},
@@ -173,7 +186,7 @@ func (tc *testContext) invalidFlow() code.Flow {
 	return m
 }
 
-func (tc *testContext) validFlow() code.Flow {
+func (tc *testContext) validFlowGetID() code.Flow {
 	m := codeMock.NewMockFlow(tc.controller)
 	m.EXPECT().Valid().Return(nil)
 	m.EXPECT().GetID().MinTimes(1).Return(uuid.FromStringOrNil("00000000-0000-0000-0000-000000000001"))

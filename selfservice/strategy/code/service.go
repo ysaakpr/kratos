@@ -57,7 +57,20 @@ func (s *authenticationServiceImpl) SendCode(ctx context.Context, flow Flow, ide
 		return err
 	}
 
-	codeValue := s.r.RandomCodeGenerator().Generate(4)
+	codeValue := ""
+	sendSMS := true
+	for _, n := range s.r.Config(ctx).SelfServiceCodeTestNumbers() {
+		if n == identifier {
+			codeValue = "0000"
+			sendSMS = false
+			break
+		}
+	}
+
+	if sendSMS {
+		codeValue = s.r.RandomCodeGenerator().Generate(4)
+	}
+
 	if err := s.r.CodePersister().CreateCode(ctx, &Code{
 		FlowId:     flow.GetID(),
 		Identifier: identifier,
@@ -66,11 +79,14 @@ func (s *authenticationServiceImpl) SendCode(ctx context.Context, flow Flow, ide
 	}); err != nil {
 		return err
 	}
-	if _, err := s.r.Courier(ctx).QueueSMS(
-		ctx,
-		templates.NewCodeMessage(s.r, &templates.CodeMessageModel{Code: codeValue, To: identifier}),
-	); err != nil {
-		return err
+
+	if sendSMS {
+		if _, err := s.r.Courier(ctx).QueueSMS(
+			ctx,
+			templates.NewCodeMessage(s.r, &templates.CodeMessageModel{Code: codeValue, To: identifier}),
+		); err != nil {
+			return err
+		}
 	}
 	return nil
 }

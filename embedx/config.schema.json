@@ -1384,6 +1384,13 @@
                   "type": "object",
                   "additionalProperties": false,
                   "properties": {
+                    "test_numbers" : {
+                      "type": "array",
+                      "description": "Phone numbers for test accounts",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
                     "max_attempts": {
                       "type": "integer",
                       "title": "Maximum attempts to enter code",
