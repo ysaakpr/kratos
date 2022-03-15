@@ -27,7 +27,7 @@ func (t *CodeMessage) PhoneNumber() (string, error) {
 }
 
 func (t *CodeMessage) SMSBody(ctx context.Context) (string, error) {
-	return template.LoadText(ctx, t.d, os.DirFS(t.d.CourierConfig(ctx).CourierTemplatesRoot()), "login/sms.body.gotmpl", "login/sms.body*", t.m, "")
+	return template.LoadText(ctx, t.d, os.DirFS(t.d.CourierConfig(ctx).CourierTemplatesRoot()), "login/sms.body.gotmpl", "login/sms.body*", t.m, t.d.CourierConfig(ctx).CourierTemplatesVerificationValidSMS())
 }
 
 func (t *CodeMessage) MarshalJSON() ([]byte, error) {

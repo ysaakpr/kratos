@@ -167,6 +167,7 @@ const (
 	CodeTestNumbers                                          = "selfservice.methods.code.config.test_numbers"
 	CodeMaxAttempts                                          = "selfservice.methods.code.config.max_attempts"
 	CodeLifespan                                             = "selfservice.methods.code.config.lifespan"
+	ViperKeyCourierTemplatesVerificationValidSMS             = "courier.templates.verification.valid.sms"
 )
 
 const (
@@ -249,6 +250,7 @@ type (
 		CourierTemplatesVerificationValid() *CourierEmailTemplate
 		CourierTemplatesRecoveryInvalid() *CourierEmailTemplate
 		CourierTemplatesRecoveryValid() *CourierEmailTemplate
+		CourierTemplatesVerificationValidSMS() string
 	}
 )
 
@@ -1248,4 +1250,8 @@ func (p *Config) SelfServiceCodeMaxAttempts() int {
 
 func (p *Config) SelfServiceCodeLifespan() time.Duration {
 	return p.p.DurationF(CodeLifespan, time.Hour)
+}
+
+func (p *Config) CourierTemplatesVerificationValidSMS() string {
+	return p.p.String(ViperKeyCourierTemplatesVerificationValidSMS)
 }
