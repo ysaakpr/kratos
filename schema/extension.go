@@ -24,6 +24,9 @@ type (
 			WebAuthn struct {
 				Identifier bool `json:"identifier"`
 			} `json:"webauthn"`
+			Code struct {
+				Identifier bool `json:"identifier"`
+			} `json:"code"`
 			TOTP struct {
 				AccountName bool `json:"account_name"`
 			} `json:"totp"`

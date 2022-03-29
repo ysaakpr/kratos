@@ -769,6 +769,9 @@
         "oidc": {
           "$ref": "#/definitions/selfServiceAfterRegistrationMethod"
         },
+        "code": {
+          "$ref": "#/definitions/selfServiceAfterRegistrationMethod"
+        },
         "hooks": {
           "$ref": "#/definitions/selfServiceHooks"
         }
@@ -865,6 +868,16 @@
           "properties": {
             "email": {
               "$ref": "#/definitions/emailCourierTemplate"
+            },
+            "sms": {
+              "type": "string",
+              "description": "The default template used for sending out sms codes ",
+              "format": "uri",
+              "examples": [
+                "file://path/to/body.html.gotmpl",
+                "https://foo.bar.com/path/to/body.html.gotmpl",
+                "base64://e3sgZGVmaW5lIGFmLVpBIH19CkhhbGxvLAoKSGVyc3RlbCBqb3UgcmVrZW5pbmcgZGV1ciBoaWVyZGllIHNrYWtlbCB0ZSB2b2xnOgp7ey0gZW5kIC19fQoKe3sgZGVmaW5lIGVuLVVTIH19CkhpLAoKcGxlYXNlIHJlY292ZXIgYWNjZXNzIHRvIHlvdXIgYWNjb3VudCBieSBjbGlja2luZyB0aGUgZm9sbG93aW5nIGxpbms6Cnt7LSBlbmQgLX19Cgp7ey0gaWYgZXEgLmxhbmcgImFmLVpBIiAtfX0KCnt7IHRlbXBsYXRlICJhZi1aQSIgLiB9fQoKe3stIGVsc2UgLX19Cgp7eyB0ZW1wbGF0ZSAiZW4tVVMiIH19Cgp7ey0gZW5kIC19fQo8YSBocmVmPSJ7eyAuUmVjb3ZlcnlVUkwgfX0iPnt7IC5SZWNvdmVyeVVSTCB9fTwvYT4"
+              ]
             }
           },
           "required": [
@@ -1424,6 +1437,47 @@
                       "items": {
                         "$ref": "#/definitions/selfServiceOIDCProvider"
                       }
+                    }
+                  }
+                }
+              }
+            },
+            "code": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "title": "Enables Code Method",
+                  "default": false
+                },
+                "config": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "test_numbers" : {
+                      "type": "array",
+                      "description": "Phone numbers for test accounts",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "max_attempts": {
+                      "type": "integer",
+                      "title": "Maximum attempts to enter code",
+                      "default": 3
+                    },
+                    "lifespan": {
+                      "title": "Code Lifespan",
+                      "description": "Sets how long the code is valid. If expired, the user has to request new code.",
+                      "type": "string",
+                      "pattern": "^[0-9]+(ns|us|ms|s|m|h)$",
+                      "default": "1m",
+                      "examples": [
+                        "1h",
+                        "1m",
+                        "1s"
+                      ]
                     }
                   }
                 }

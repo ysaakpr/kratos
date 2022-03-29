@@ -8,6 +8,9 @@ import (
 )
 
 func (c *courier) DispatchMessage(ctx context.Context, msg Message) error {
+	messageStatus := MessageStatusSent
+	logMessage := "Courier sent out message."
+
 	switch msg.Type {
 	case MessageTypeEmail:
 		if err := c.dispatchEmail(ctx, msg); err != nil {
@@ -15,13 +18,18 @@ func (c *courier) DispatchMessage(ctx context.Context, msg Message) error {
 		}
 	case MessageTypePhone:
 		if err := c.dispatchSMS(ctx, msg); err != nil {
-			return err
+			if m, ok := err.(*MessageRejectedError); ok {
+				messageStatus = MessageStatusRejected
+				logMessage = m.Error()
+			} else {
+				return err
+			}
 		}
 	default:
 		return errors.Errorf("received unexpected message type: %d", msg.Type)
 	}
 
-	if err := c.deps.CourierPersister().SetMessageStatus(ctx, msg.ID, MessageStatusSent); err != nil {
+	if err := c.deps.CourierPersister().SetMessageStatus(ctx, msg.ID, messageStatus); err != nil {
 		c.deps.Logger().
 			WithError(err).
 			WithField("message_id", msg.ID).
@@ -34,7 +42,7 @@ func (c *courier) DispatchMessage(ctx context.Context, msg Message) error {
 		WithField("message_type", msg.Type).
 		WithField("message_template_type", msg.TemplateType).
 		WithField("message_subject", msg.Subject).
-		Debug("Courier sent out message.")
+		Debug(logMessage)
 
 	return nil
 }

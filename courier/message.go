@@ -16,6 +16,7 @@ const (
 	MessageStatusSent
 	MessageStatusProcessing
 	MessageStatusAbandoned
+	MessageStatusRejected // Service won't send this message for some unrecoverable reasons (incorrect phone number e.g.)
 )
 
 type MessageType int

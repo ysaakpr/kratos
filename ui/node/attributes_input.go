@@ -162,6 +162,8 @@ func NewInputFieldFromSchema(name string, group Group, p jsonschemax.Path, opts 
 		attr.Type = InputAttributeTypeURI
 	case "regex":
 		attr.Type = InputAttributeTypeText
+	case "phone":
+		attr.Type = InputAttributeTypePhone
 	}
 
 	// Other properties
