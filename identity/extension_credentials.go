@@ -14,12 +14,12 @@ import (
 
 type SchemaExtensionCredentials struct {
 	i *Identity
-	v []string
+	v map[CredentialsType][]string
 	l sync.Mutex
 }
 
 func NewSchemaExtensionCredentials(i *Identity) *SchemaExtensionCredentials {
-	return &SchemaExtensionCredentials{i: i}
+	return &SchemaExtensionCredentials{i: i, v: make(map[CredentialsType][]string)}
 }
 
 func (r *SchemaExtensionCredentials) setIdentifier(ct CredentialsType, value interface{}) {
@@ -45,12 +45,29 @@ func (r *SchemaExtensionCredentials) Run(_ jsonschema.ValidationContext, s schem
 	if s.Credentials.Password.Identifier {
 		r.setIdentifier(CredentialsTypePassword, value)
 	}
-
 	if s.Credentials.WebAuthn.Identifier {
 		r.setIdentifier(CredentialsTypeWebAuthn, value)
+		r.setCredentials(value, CredentialsTypePassword)
+	} else if s.Credentials.Code.Identifier {
+		r.setCredentials(value, CredentialsTypeCode)
 	}
 
 	return nil
+}
+
+func (r *SchemaExtensionCredentials) setCredentials(value interface{}, t CredentialsType) {
+	cred, ok := r.i.GetCredentials(t)
+	if !ok {
+		cred = &Credentials{
+			Type:        t,
+			Identifiers: []string{},
+			Config:      sqlxx.JSONRawMessage{},
+		}
+	}
+
+	r.v[t] = stringslice.Unique(append(r.v[t], strings.ToLower(fmt.Sprintf("%s", value))))
+	cred.Identifiers = r.v[t]
+	r.i.SetCredentials(t, *cred)
 }
 
 func (r *SchemaExtensionCredentials) Finish() error {

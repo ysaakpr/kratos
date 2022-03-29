@@ -2,7 +2,6 @@ package identity
 
 import (
 	"context"
-
 	"github.com/tidwall/sjson"
 
 	"github.com/ory/kratos/driver/config"

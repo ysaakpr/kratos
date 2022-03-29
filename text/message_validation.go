@@ -155,3 +155,21 @@ func NewErrorValidationSuchNoWebAuthnUser() *Message {
 		Context: context(nil),
 	}
 }
+
+func NewErrorValidationInvalidCode() *Message {
+	return &Message{
+		ID:      ErrorValidationInvalidCode,
+		Text:    "The provided code is invalid, check for spelling mistakes in your code or phone number.",
+		Type:    Error,
+		Context: context(nil),
+	}
+}
+
+func NewErrorCodeSent() *Message {
+	return &Message{
+		ID:      ErrorValidationCodeSent,
+		Text:    "Access code has been sent.",
+		Type:    Error,
+		Context: context(nil),
+	}
+}
